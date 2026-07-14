@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 স্কুল রেজাল্ট পোর্টাল</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- হেডার -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📚 স্কুল রেজাল্ট পোর্টাল</h1>
+                <p>আপনার ফলাফল এখানে খুঁজে পান</p>
+            </div>
+        </header>
+
+        <!-- মেইন কন্টেন্ট -->
+        <main class="main-content">
+            <!-- Admin Panel -->
+            <section class="admin-section">
+                <div class="card admin-card">
+                    <h2>📊 Admin Panel</h2>
+                    <div class="upload-section">
+                        <input type="file" id="excelFile" accept=".xlsx,.xls" />
+                        <button class="btn btn-primary" onclick="uploadFile()">ফাইল আপলোড করুন</button>
+                        <p id="uploadStatus" class="status-message"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- স্টুডেন্ট সার্চ সেকশন -->
+            <section class="search-section" id="searchSection" style="display: none;">
+                <div class="card search-card">
+                    <h2>🔍 আপনার ফলাফল খুঁজুন</h2>
+                    
+                    <!-- Step 1: ক্লাস নির্বাচন -->
+                    <div class="form-group">
+                        <label for="classSelect">ক্লাস নির্বাচন করুন:</label>
+                        <select id="classSelect" onchange="onClassChange()">
+                            <option value="">-- নির্বাচন করুন --</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 2: শিফট নির্বাচন -->
+                    <div class="form-group" id="shiftGroup" style="display: none;">
+                        <label for="shiftSelect">শিফট নির্বাচন করুন:</label>
+                        <select id="shiftSelect" onchange="onShiftChange()">
+                            <option value="">-- নির্বাচন করুন --</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 3: পরীক্ষা নির্বাচন -->
+                    <div class="form-group" id="examGroup" style="display: none;">
+                        <label for="examSelect">পরীক্ষা নির্বাচন করুন:</label>
+                        <select id="examSelect" onchange="onExamChange()">
+                            <option value="">-- নির্বাচন করুন --</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 4: রোল নম্বর বা নাম -->
+                    <div class="form-group" id="searchGroup" style="display: none;">
+                        <label>শিক্ষার্থী খুঁজুন:</label>
+                        <div class="search-input-group">
+                            <input type="text" id="rollInput" placeholder="রোল নম্বর দিন" />
+                            <span class="or-text">অথবা</span>
+                            <input type="text" id="nameInput" placeholder="নাম দিন" />
+                        </div>
+                        <button class="btn btn-success" onclick="searchResult()">ফলাফল খুঁজুন</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- রেজাল্ট ডিসপ্লে সেকশন -->
+            <section id="resultSection" style="display: none;">
+                <div class="card result-card">
+                    <div class="result-header">
+                        <h2 id="studentName"></h2>
+                        <p id="studentInfo"></p>
+                    </div>
+
+                    <div class="marks-container" id="marksContainer"></div>
+
+                    <button class="btn btn-secondary" onclick="resetSearch()">নতুন সার্চ</button>
+                </div>
+            </section>
+
+            <!-- এরর মেসেজ -->
+            <div id="errorMessage" class="error-alert" style="display: none;"></div>
+        </main>
+
+        <!-- ফুটার -->
+        <footer class="footer">
+            <p>&copy; 2026 স্কুল রেজাল্ট পোর্টাল | সর্বস্বত্ব সংরক্ষিত</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
