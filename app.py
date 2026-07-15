@@ -30,30 +30,30 @@ def index():
 def upload_file():
     """Excel ফাইল আপলোড করুন"""
     global current_file, data_cache
-    
+
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'কোনো ফাইল পাঠানো হয়নি'}), 400
-        
+
         file = request.files['file']
-        
+
         if file.filename == '':
             return jsonify({'error': 'কোনো ফাইল নির্বাচিত হয়নি'}), 400
-        
+
         # ফাইল এক্সটেনশন চেক করুন
         if not allowed_file(file.filename):
             return jsonify({'error': 'শুধুমাত্র .xlsx বা .xls ফাইল অনুমোদিত'}), 400
-        
+
         # ফাইল সেভ করুন
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
-        
+
         # Parser লোড করুন
         try:
             parser = data_cache.load_data(filepath)
             current_file = filepath
-            
+
             return jsonify({
                 'success': True,
                 'message': 'ফাইল সফলভাবে আপলোড হয়েছে',
@@ -61,7 +61,7 @@ def upload_file():
             })
         except Exception as e:
             return jsonify({'error': f'ফাইল পার্স করতে ত্রুটি: {str(e)}'}), 400
-            
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -72,10 +72,10 @@ def get_classes():
     try:
         if not data_cache.get_parser():
             return jsonify({'error': 'প্রথমে ফাইল আপলোড করুন'}), 400
-        
+
         parser = data_cache.get_parser()
         classes = parser.get_classes()
-        
+
         return jsonify({
             'success': True,
             'classes': classes
@@ -91,9 +91,9 @@ def get_shifts(class_name):
         parser = data_cache.get_parser()
         if not parser:
             return jsonify({'error': 'প্রথমে ফাইল আপলোড করুন'}), 400
-        
+
         shifts = parser.get_shifts(class_name)
-        
+
         return jsonify({
             'success': True,
             'shifts': shifts
@@ -109,9 +109,9 @@ def get_exams(class_name, shift_name):
         parser = data_cache.get_parser()
         if not parser:
             return jsonify({'error': 'প্রথমে ফাইল আপলোড করুন'}), 400
-        
+
         exams = parser.get_exams(class_name, shift_name)
-        
+
         return jsonify({
             'success': True,
             'exams': exams
@@ -127,9 +127,9 @@ def get_students(class_name, shift_name, exam_name):
         parser = data_cache.get_parser()
         if not parser:
             return jsonify({'error': 'প্রথমে ফাইল আপলোড করুন'}), 400
-        
+
         students = parser.get_students(class_name, shift_name, exam_name)
-        
+
         return jsonify({
             'success': True,
             'students': students
@@ -145,14 +145,14 @@ def get_result():
         parser = data_cache.get_parser()
         if not parser:
             return jsonify({'error': 'প্রথমে ফাইল আপলোড করুন'}), 400
-        
+
         data = request.json
         class_name = data.get('class')
         shift_name = data.get('shift')
         exam_name = data.get('exam')
         roll = data.get('roll')
         name = data.get('name')
-        
+
         # রোল নম্বর দিয়ে সার্চ করুন যদি দেওয়া থাকে
         if roll:
             result = parser.get_result(class_name, shift_name, exam_name, roll)
@@ -160,10 +160,10 @@ def get_result():
             result = parser.get_result_by_name(class_name, shift_name, exam_name, name)
         else:
             return jsonify({'error': 'রোল নম্বর বা নাম দিন'}), 400
-        
+
         if not result:
             return jsonify({'error': 'শিক্ষার্থী খুঁজে পাওয়া যায়নি'}), 404
-        
+
         return jsonify({
             'success': True,
             'result': result
